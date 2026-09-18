@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#2a0929">
+
+<title>send the question 💌</title>
+
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  html, body { min-height: 100%; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Rounded", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: linear-gradient(160deg, #2a0929 0%, #6d1140 55%, #a81a56 100%);
+    background-attachment: fixed;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    padding: 30px 18px 60px;
+    overflow-x: hidden;
+  }
+
+  input, textarea { user-select: text; -webkit-user-select: text; }
+
+  .heart {
+    position: fixed;
+    bottom: -10vh;
+    font-size: 1.6rem;
+    opacity: 0;
+    animation: floatUp linear infinite;
+    pointer-events: none;
+    z-index: 0;
+  }
+  @keyframes floatUp {
+    0%   { transform: translateY(0) scale(.7);      opacity: 0; }
+    15%  { opacity: .3; }
+    100% { transform: translateY(-120vh) scale(1.1); opacity: 0; }
+  }
+
+  .wrap {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 430px;
+  }
+
+  .head { text-align: center; margin-bottom: 22px; }
+  .head .envelope { font-size: 3rem; }
+  .head h1 {
+    font-size: clamp(1.7rem, 7.5vw, 2.2rem);
+    font-weight: 800;
+    letter-spacing: -.5px;
+    line-height: 1.2;
+    margin-top: 4px;
+    text-shadow: 0 4px 24px rgba(0,0,0,.35);
+  }
+  .head .sub { font-size: .9rem; font-style: italic; opacity: .7; margin-top: 8px; }
+
+  .card {
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.14);
+    border-radius: 22px;
+    padding: 18px;
+    margin-bottom: 16px;
+    box-shadow: 0 8px 22px rgba(0,0,0,.22);
+  }
+
+  .card-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.02rem;
+    font-weight: 800;
+    margin-bottom: 14px;
+  }
+  .card-title .step {
+    font-size: .7rem;
+    font-weight: 800;
+    letter-spacing: .08em;
+    background: rgba(255,77,109,.28);
+    border: 1px solid rgba(255,255,255,.16);
+    color: #ffd7e0;
+    border-radius: 999px;
+    padding: 3px 9px;
+  }
+
+  label {
+    display: block;
+    font-size: .78rem;
+    font-weight: 700;
+    color: rgba(255,255,255,.72);
+    margin: 0 0 6px 4px;
+  }
+
+  input[type="text"], input[type="tel"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff;
+    background-color: rgba(0,0,0,.2);
+    border: 1px solid rgba(255,255,255,.14);
+    border-radius: 14px;
+    padding: 14px;
+    outline: none;
+    margin-bottom: 14px;
+  }
+  input::placeholder { color: rgba(255,255,255,.38); font-weight: 500; }
+  input:focus { border-color: rgba(255,77,109,.75); }
+  input:last-child { margin-bottom: 0; }
+
+  .hint {
+    font-size: .72rem;
+    line-height: 1.45;
+    color: rgba(255,255,255,.55);
+    margin: -6px 4px 0;
+  }
+
+  .link-box {
+    width: 100%;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: .78rem;
+    line-height: 1.5;
+    color: #ffd7e0;
+    background: rgba(0,0,0,.28);
+    border: 1px solid rgba(255,255,255,.14);
+    border-radius: 14px;
+    padding: 13px 14px;
+    margin-bottom: 12px;
+    word-break: break-all;
+    user-select: all;
+    -webkit-user-select: all;
+    min-height: 46px;
+  }
+
+  .btn-row { display: flex; gap: 10px; margin-bottom: 10px; }
+  .btn-row.two > * { flex: 1; }
+  .btn-row.three > * { flex: 1; }
+
+  .btn {
+    border: none;
+    border-radius: 18px;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 800;
+    color: #fff;
+    min-height: 56px;
+    padding: 0 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform .12s ease, filter .12s ease, background-color .12s ease;
+  }
+  .btn:active { transform: scale(.96); filter: brightness(1.12); }
+
+  .btn-primary {
+    background: linear-gradient(135deg, #ff4d6d, #ff8fa3);
+    box-shadow: 0 8px 26px rgba(255,77,109,.45), inset 0 1px 0 rgba(255,255,255,.35);
+  }
+  .btn-wa {
+    background: linear-gradient(135deg, #25d366, #128c7e);
+    box-shadow: 0 6px 20px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.25);
+  }
+  .btn-ghost {
+    background-color: #3c3c4f;
+    box-shadow: 0 6px 20px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.12);
+    font-size: .92rem;
+  }
+  .btn-ghost:active { background-color: #55556e; }
+
+  .warn {
+    font-size: .74rem;
+    line-height: 1.5;
+    color: #ffe1a8;
+    background: rgba(255,196,84,.1);
+    border: 1px solid rgba(255,196,84,.3);
+    border-radius: 14px;
+    padding: 10px 13px;
+    margin-top: 6px;
+    display: none;
+  }
+  .warn.show { display: block; }
+
+  /* ---------- live preview ---------- */
+  .phone {
+    width: 100%;
+    max-width: 300px;
+    margin: 4px auto 0;
+    border-radius: 34px;
+    padding: 12px;
+    background: rgba(0,0,0,.35);
+    border: 1px solid rgba(255,255,255,.14);
+    box-shadow: 0 14px 34px rgba(0,0,0,.4);
+  }
+  .phone-screen {
+    position: relative;
+    border-radius: 24px;
+    background: linear-gradient(160deg, #2b0a3d 0%, #5b1136 48%, #8f1d4f 100%);
+    padding: 22px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    overflow: hidden;
+    min-height: 300px;
+    justify-content: center;
+    text-align: center;
+  }
+  .phone-screen .p-heart {
+    position: absolute;
+    bottom: -20px;
+    font-size: 1rem;
+    opacity: .3;
+    animation: floatUp linear infinite;
+    pointer-events: none;
+  }
+  .p-pill {
+    font-size: .58rem;
+    font-weight: 800;
+    color: #ffd7e0;
+    background: rgba(255,77,109,.25);
+    border: 1px solid rgba(255,255,255,.18);
+    border-radius: 999px;
+    padding: 5px 10px;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .p-env { font-size: 1.7rem; }
+  .p-q {
+    font-size: .92rem;
+    font-weight: 800;
+    line-height: 1.25;
+    letter-spacing: -.3px;
+    text-shadow: 0 3px 14px rgba(0,0,0,.35);
+    word-break: break-word;
+  }
+  .p-sub { font-size: .58rem; font-style: italic; opacity: .65; margin-top: -6px; }
+  .p-btns { display: flex; gap: 8px; width: 100%; margin-top: 2px; }
+  .p-btn {
+    flex: 1;
+    min-height: 34px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: .72rem;
+    font-weight: 800;
+  }
+  .p-yes { background: linear-gradient(135deg, #ff4d6d, #ff8fa3); box-shadow: 0 5px 16px rgba(255,77,109,.4); }
+  .p-no  { background-color: #3c3c4f; color: rgba(255,255,255,.85); }
+
+  .toast {
+    position: fixed;
+    left: 50%;
+    bottom: max(22px, env(safe-area-inset-bottom));
+    transform: translate(-50%, 14px);
+    z-index: 120;
+    font-size: .85rem;
+    font-weight: 700;
+    color: #fff;
+    background: rgba(0,0,0,.8);
+    border: 1px solid rgba(255,255,255,.18);
+    padding: 12px 18px;
+    border-radius: 999px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .25s ease, transform .25s ease;
+    max-width: 90vw;
+    text-align: center;
+  }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+  .foot {
+    text-align: center;
+    font-size: .72rem;
+    line-height: 1.55;
+    color: rgba(255,255,255,.55);
+    margin-top: 18px;
+  }
+  .foot a { color: #ffb3c1; text-decoration: none; border-bottom: 1px solid rgba(255,179,193,.4); }
+</style>
+</head>
+
+<body>
+
+<span class="heart" style="left:6%;  animation-duration:12s; animation-delay:0s;">💗</span>
+<span class="heart" style="left:30%; animation-duration:15s; animation-delay:2.5s;">💜</span>
+<span class="heart" style="left:55%; animation-duration:13s; animation-delay:5s;">🤍</span>
+<span class="heart" style="left:78%; animation-duration:16s; animation-delay:1s;">💗</span>
+<span class="heart" style="left:92%; animation-duration:11s; animation-delay:3.5s;">💜</span>
+
+<div class="wrap">
+
+  <div class="head">
+    <div class="envelope">💌</div>
+    <h1>Send the question</h1>
+    <div class="sub">make the invite, text it, get your answer back</div>
+  </div>
+
+  <!-- 1 — you -->
+  <div class="card">
+    <div class="card-title"><span class="step">1</span><span>You</span></div>
+
+    <label for="nameInput">Your name</label>
+    <input type="text" id="nameInput" placeholder="Alex" autocomplete="given-name" maxlength="24">
+
+    <label for="telInput">Your phone number</label>
+    <input type="tel" id="telInput" placeholder="+44 7700 900123" inputmode="tel" autocomplete="tel">
+    <div class="hint">Include your country code — this is the number their answer comes back to. It travels inside the link, so only send it to people you're happy having it.</div>
+  </div>
+
+  <!-- 2 — the question -->
+  <div class="card">
+    <div class="card-title"><span class="step">2</span><span>The question</span></div>
+
+    <label for="qInput">What are you asking?</label>
+    <input type="text" id="qInput" placeholder="Will you go on a date with me?" maxlength="90">
+
+    <label for="vInput">Options they can pick from</label>
+    <input type="text" id="vInput" placeholder="Coffee, Dinner, Drinks, Cinema, A walk, Pizza">
+    <div class="hint">Separate with commas — each one becomes a button they can tap. They can always type their own too.</div>
+  </div>
+
+  <!-- 3 — send -->
+  <div class="card">
+    <div class="card-title"><span class="step">3</span><span>Send it</span></div>
+
+    <div class="link-box" id="linkBox">—</div>
+
+    <div class="btn-row two">
+      <a class="btn btn-primary" id="smsLink" href="#">Send it 💬</a>
+      <a class="btn btn-wa" id="waLink" href="#" target="_blank" rel="noopener">WhatsApp</a>
+    </div>
+    <div class="btn-row three">
+      <button class="btn btn-ghost" id="copyLink" type="button">Copy link</button>
+      <a class="btn btn-ghost" id="openLink" href="invite.html" target="_blank" rel="noopener">Preview</a>
+    </div>
+
+    <div class="warn" id="warn">
+      This page is running from a local file, so the link won't work for anyone else yet.
+      Put these two files online first (see the README — it takes about two minutes with GitHub Pages) and the link will work everywhere.
+    </div>
+  </div>
+
+  <!-- live preview -->
+  <div class="card">
+    <div class="card-title"><span>👀</span><span>What they'll see</span></div>
+    <div class="phone">
+      <div class="phone-screen">
+        <span class="p-heart" style="left:14%; animation-duration:9s;">💗</span>
+        <span class="p-heart" style="left:64%; animation-duration:12s; animation-delay:2s;">💜</span>
+        <div class="p-pill" id="pPill">💌 Alex has a question for you</div>
+        <div class="p-env">💌</div>
+        <div class="p-q" id="pQ">Will you go on a date with me?</div>
+        <div class="p-sub">(choose wisely…)</div>
+        <div class="p-btns"><div class="p-btn p-yes">Yes</div><div class="p-btn p-no">No</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">
+    Their answer comes back as a normal text from their own phone — nothing is stored on a server, and there are no accounts.
+    <br>Venue emojis come from the built-in dictionary; unknown words get 📍.
+  </div>
+
+  <div class="toast" id="toast"></div>
+</div>
+
+<script>
+(function () {
+  var nameInput = document.getElementById('nameInput');
+  var telInput  = document.getElementById('telInput');
+  var qInput    = document.getElementById('qInput');
+  var vInput    = document.getElementById('vInput');
+  var linkBox   = document.getElementById('linkBox');
+  var smsLink   = document.getElementById('smsLink');
+  var waLink    = document.getElementById('waLink');
+  var openLink  = document.getElementById('openLink');
+  var copyLink  = document.getElementById('copyLink');
+  var warnEl    = document.getElementById('warn');
+  var pPill     = document.getElementById('pPill');
+  var pQ        = document.getElementById('pQ');
+  var toastEl   = document.getElementById('toast');
+
+  var DEFAULTS = {
+    name: '',
+    tel: '',
+    q: 'Will you go on a date with me?',
+    v: 'Coffee, Dinner, Drinks, Cinema, A walk, Pizza'
+  };
+
+  var STORE_KEY = 'send-the-question:v1';
+
+  /* ---------- remember what they typed (best effort) ---------- */
+  function load() {
+    try {
+      var raw = window.localStorage.getItem(STORE_KEY);
+      if (!raw) return null;
+      return JSON.parse(raw);
+    } catch (e) { return null; }
+  }
+  function save() {
+    try {
+      window.localStorage.setItem(STORE_KEY, JSON.stringify({
+        name: nameInput.value,
+        tel: telInput.value,
+        q: qInput.value,
+        v: vInput.value
+      }));
+    } catch (e) { /* private mode — no worries */ }
+  }
+
+  var saved = load();
+
+  nameInput.value = (saved && saved.name) || DEFAULTS.name;
+  telInput.value  = (saved && saved.tel)  || DEFAULTS.tel;
+  qInput.value    = (saved && saved.q)    || DEFAULTS.q;
+  vInput.value    = (saved && saved.v)    || DEFAULTS.v;
+
+  /* ---------- build the link ---------- */
+  /* 🔗 WHERE YOUR APP LIVES ONLINE (GitHub Pages).
+     Put your site address here ONCE — with the slash at the end —
+     and every invite link you make will open there in their
+     browser, even when you build the invite from the iPhone app
+     or a local file. e.g.
+     var PUBLISH_URL = 'https://yourusername.github.io/send-the-question/';
+     Leave it '' to use the place this page is served from. */
+  var PUBLISH_URL = '';
+
+  function baseDir() {
+    var url = window.location.href.split('#')[0].split('?')[0];
+    if (url.charAt(url.length - 1) === '/') return url;
+    var cut = url.lastIndexOf('/');
+    return cut >= 0 ? url.substring(0, cut + 1) : url;
+  }
+
+  function buildLink() {
+    var q = [];
+    var name = nameInput.value.trim();
+    var tel = telInput.value.trim();
+    var question = qInput.value.trim();
+    var venues = vInput.value.split(',')
+      .map(function (s) { return s.trim(); })
+      .filter(function (s) { return s.length > 0; })
+      .join(',');
+
+    if (name) q.push('from=' + encodeURIComponent(name));
+    if (tel) q.push('tel=' + encodeURIComponent(tel));
+    if (question) q.push('q=' + encodeURIComponent(question));
+    if (venues) q.push('v=' + encodeURIComponent(venues));
+
+    var base = PUBLISH_URL ? PUBLISH_URL : baseDir();
+    return base + 'invite.html' + (q.length ? '?' + q.join('&') : '');
+  }
+
+  function previewLink() { return buildLink() + (buildLink().indexOf('?') >= 0 ? '&' : '?') + 'demo=1'; }
+
+  function render() {
+    var link = buildLink();
+    var name = nameInput.value.trim() || 'Alex';
+    var question = qInput.value.trim() || DEFAULTS.q;
+
+    linkBox.textContent = link;
+
+    // sending the *link* to whoever they like — no destination number, they pick the contact
+    smsLink.href = 'sms:?&body=' + encodeURIComponent('💌 I have a question for you… ' + link);
+    waLink.href  = 'https://wa.me/?text=' + encodeURIComponent('💌 I have a question for you… ' + link);
+
+    var demo = previewLink();
+    openLink.href = demo;
+
+    pPill.textContent = '💌 ' + name + ' has a question for you';
+    pQ.textContent = question;
+
+    var isFile = window.location.protocol === 'file:';
+    var telOk = telInput.value.replace(/[^0-9]/g, '').length >= 7;
+    warnEl.classList.toggle('show', isFile || !telOk);
+    if (!isFile && !telOk) {
+      warnEl.textContent = 'Add your phone number (with the country code, e.g. +44 7700 900123) or their answer won\'t have anywhere to go.';
+    } else if (isFile && telOk) {
+      warnEl.textContent = 'This page is running from a local file, so the link won\'t work for anyone else yet. Put these two files online first (see the README — about two minutes with GitHub Pages) and the link will work everywhere.';
+    } else if (isFile) {
+      warnEl.textContent = 'Two things: put these files online so the link works for them, and add your phone number so their answer has somewhere to go.';
+    }
+
+    save();
+  }
+
+  [nameInput, telInput, qInput, vInput].forEach(function (el) {
+    el.addEventListener('input', render);
+  });
+
+  /* ---------- copy + toast ---------- */
+  var toastTimer = null;
+  function toast(text) {
+    toastEl.textContent = text;
+    toastEl.classList.add('show');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastEl.classList.remove('show'); }, 2600);
+  }
+
+  copyLink.addEventListener('click', function () {
+    var text = buildLink();
+    function fallback() {
+      try {
+        var ta = document.createElement('textarea');
+        ta.value = text;
+        ta.setAttribute('readonly', '');
+        ta.style.position = 'fixed';
+        ta.style.top = '-1000px';
+        document.body.appendChild(ta);
+        ta.select();
+        ta.setSelectionRange(0, text.length);
+        var ok = document.execCommand('copy');
+        document.body.removeChild(ta);
+        toast(ok ? '✅ link copied' : '❗️ copy failed — select the link above');
+      } catch (e) { toast('❗️ copy failed — select the link above'); }
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () { toast('✅ link copied'); }, fallback);
+    } else { fallback(); }
+  });
+
+  smsLink.addEventListener('click', function () { toast('📨 opening your messages…'); });
+  waLink.addEventListener('click', function () { toast('📨 opening WhatsApp…'); });
+
+  render();
+})();
+</script>
+</body>
+</html>
